@@ -6,7 +6,6 @@ const User = require("../models/User");
 const createBook = async (req,res)=>{
     const {title, author,description,image,bookUrl } = req.body;
     const creator = req.userId;
-    console.log(title,author,description)
     if(title&&author&&description){
         const bookInfo = {
             title,
@@ -45,15 +44,16 @@ const getBooks = async (req,res)=>{
             res.status(200).json({ status: "success", data: allBooks });
         }else if(isNew=="1"){
             const recentBooks = await Book.find({ createdAt: { $gte: tenMinutesAgo } });
-            return res.status(200).json({ status: 'success', books: recentBooks });
+            return res.status(200).json({ status: 'success', data: recentBooks });
         }else if(old=="1"){
             const oldBooks = await Book.find({ createdAt: { $lt: tenMinutesAgo } });
-            return res.status(200).json({ status: 'success', books: oldBooks });
+            return res.status(200).json({ status: 'success', data: oldBooks });
         }else{
             return res.status(400).json({ status: 'fail', error: 'Unexpected query parameters' });
         }
         
     } catch (error) {
+        console.log("came here")
         res.status(500).json({ status: "failed", error: error.message });
     }
 }
